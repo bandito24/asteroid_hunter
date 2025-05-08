@@ -10,6 +10,7 @@ void app_main() {
     draw_spaceship(&ship, frame_buffer);
 
     xTaskCreate(display, "display", 2400, &ship, 2, NULL);
+    xTaskCreate()
 
     while (1) {
         clear_buffer(frame_buffer);
