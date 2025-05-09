@@ -4,6 +4,8 @@
 #include "freertos/task.h"
 #include "config.h"
 
+#define MAX_BULLETS 10
+#define MAX_ASTEROIDS 10
 
 
 typedef struct {
@@ -18,12 +20,29 @@ typedef struct {
 } Bullet;
 
 typedef struct {
-    int8_t *frame_buffer;
+    int8_t x_pos;
+    int8_t y_pos;
+    bool initialized;
+} Point;
+
+typedef struct {
+    Point dimmensions[4];
+    int8_t dimmension_count;
+    bool active
+} Asteroid;
+
+typedef struct {
     Bullet *bullets;
     SemaphoreHandle_t mutex;
 } BulletTaskContext;
 
-void move_x(int8_t direction, Spaceship *ship);
-void move_y(int8_t direction, Spaceship *ship);
-void draw_spaceship(Spaceship *ship, int8_t *frame_buffer);
-void shoot_blaster(Spaceship *ship, int8_t *frame_buffer);
+extern Bullet bullets[MAX_BULLETS];
+extern BulletTaskContext bullet_task_context;
+
+void move_x(int8_t direction);
+void move_y(int8_t direction);
+void draw_spaceship();
+void shoot_bullet();
+void bullet_task(void *pvParameters);
+void asteroid_task(void *pvParameters);
+void game_play_init();

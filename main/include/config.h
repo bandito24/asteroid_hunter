@@ -8,7 +8,7 @@
 #define LATCH_PIN GPIO_NUM_5
 #define move_x_gpio GPIO_NUM_33
 #define move_y_gpio GPIO_NUM_32
-#define cannon_gpio GPIO_NUM_22
+#define bullet_gpio GPIO_NUM_22
 
 #define MOVE_THRESHOLD 60
 #define ROW_COUNT 8

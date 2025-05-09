@@ -1,6 +1,5 @@
 #include "controls.h"
 #include "config.h"
-// #include "esp_adc_cal.h"
 
 adc1_channel_t analog_channels[num_directions] = {
     [x] = ADC_CHANNEL_4,
@@ -25,7 +24,7 @@ void adc_init() {
     }
 }
 
-void analog_read(Spaceship *ship) {
+void analog_read() {
     uint32_t adc_readings[num_directions];
     for (int i = 0; i < num_directions; i++)
         adc_readings[i] = adc1_get_raw(analog_channels[i]);
@@ -34,8 +33,8 @@ void analog_read(Spaceship *ship) {
     int32_t diffY = adc_readings[y] - analog_baseline[y];
     if (abs(diffX) >= MOVE_THRESHOLD || abs(diffY) >= MOVE_THRESHOLD) {
         if (abs(diffX) > abs(diffY))
-            move_x(diffX < 0 ? -1 : 1, ship);
+            move_x(diffX < 0 ? -1 : 1);
         else
-            move_y(diffY < 0 ? -1 : 1, ship);
+            move_y(diffY < 0 ? -1 : 1);
     }
 }

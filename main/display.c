@@ -7,7 +7,7 @@
 #include <string.h>
 
 spi_device_handle_t spi;
-DRAM_ATTR int8_t frame_buffer[ROW_COUNT] = {0x00};
+static DRAM_ATTR int8_t frame_buffer[ROW_COUNT] = {0x00};
 
 void latch()
 {
@@ -18,6 +18,7 @@ void latch()
 
 void spi_init()
 {
+
     spi_bus_config_t buscfg = {
         .mosi_io_num = SER_PIN,
         .sclk_io_num = SRCLK_PIN,
@@ -53,14 +54,14 @@ void display(void *pvParameters)
     }
 }
 
-void set_pixel(int8_t col, int8_t row, int8_t *frame_buffer)
+void set_pixel(int8_t col, int8_t row)
 {
     if (row < 0 || row >= ROW_COUNT || col < 0 || col >= COL_COUNT)
         return;
     frame_buffer[row] |= (1 << (COL_COUNT - 1 - col));
 }
 
-void clear_buffer(int8_t *frame_buffer)
+void clear_buffer()
 {
     memset(frame_buffer, 0x00, ROW_COUNT);
 }

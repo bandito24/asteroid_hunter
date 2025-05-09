@@ -2,20 +2,26 @@
 #include "display.h"
 #include "controls.h"
 
-void app_main() {
+
+
+
+void app_main()
+{
+
     spi_init();
     adc_init();
+    game_play_init();
 
-    Spaceship ship = {.left_wing_index = 0, .nose_index = 1};
-    draw_spaceship(&ship, frame_buffer);
+    draw_spaceship();
 
-    xTaskCreate(display, "display", 2400, &ship, 2, NULL);
-    xTaskCreate()
-
-    while (1) {
-        clear_buffer(frame_buffer);
-        draw_spaceship(&ship, frame_buffer);
-        analog_read(&ship);
+    xTaskCreate(display, "display", 2400, NULL, 2, NULL);
+    xTaskCreate(bullet_task, "bullet_task", 2400, NULL, 1, NULL);
+    xTaskCreate(asteroid_task, "asteroid_task", 2400, NULL, 1, NULL);
+    while (1)
+    {
+        clear_buffer();
+        draw_spaceship();
+        analog_read();
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 }

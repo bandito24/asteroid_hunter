@@ -2,4 +2,4 @@
 #include "spaceship.h"
 
 void adc_init();
-void analog_read(Spaceship *ship);
+void analog_read();
