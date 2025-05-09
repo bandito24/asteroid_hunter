@@ -4,6 +4,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_rom_sys.h"
+#include "bit_maps.h"
 #include <string.h>
 
 spi_device_handle_t spi;
@@ -37,10 +38,13 @@ void spi_init()
     gpio_set_direction(LATCH_PIN, GPIO_MODE_OUTPUT);
 }
 
+
+
 void display(void *pvParameters)
 {
     while (1)
     {
+
         for (int row = 0; row < ROW_COUNT; row++)
         {
             spi_transaction_t t = {
@@ -54,6 +58,10 @@ void display(void *pvParameters)
     }
 }
 
+// void display_loss()
+// {
+// }
+
 void set_pixel(int8_t col, int8_t row)
 {
     if (row < 0 || row >= ROW_COUNT || col < 0 || col >= COL_COUNT)
@@ -65,3 +73,26 @@ void clear_buffer()
 {
     memset(frame_buffer, 0x00, ROW_COUNT);
 }
+
+static void set_screen_content(uint8_t char_array[ROW_COUNT]){
+    for(int i = 0; i < ROW_COUNT; i++){
+        uint8_t b_string = char_array[i]; 
+        for(int j = 0; j < COL_COUNT; j++){
+            if((b_string >> j) & 1){
+            set_pixel(i, j);
+            }
+        }
+    }
+}
+void display_loss(){
+    set_screen_content(loss_pattern);
+}
+void display_win(){
+    set_screen_content(win_pattern);
+}
+void display_level(uint8_t level){
+    int selected = (level - 1) % 10;
+    uint8_t *bit_level = level_bit_maps[selected];
+    set_screen_content(bit_level);
+}
+

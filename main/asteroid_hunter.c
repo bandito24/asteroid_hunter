@@ -12,7 +12,7 @@ void app_main()
     adc_init();
     game_play_init();
 
-    draw_spaceship();
+    draw_gameplay();
 
     xTaskCreate(display, "display", 2400, NULL, 2, NULL);
     xTaskCreate(bullet_task, "bullet_task", 2400, NULL, 1, NULL);
@@ -20,7 +20,7 @@ void app_main()
     while (1)
     {
         clear_buffer();
-        draw_spaceship();
+        draw_gameplay();
         analog_read();
         vTaskDelay(pdMS_TO_TICKS(50));
     }
