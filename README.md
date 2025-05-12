@@ -30,11 +30,13 @@ You can easily clone the source code and modify the game parameters by editing `
 ### Example Configuration (`config.h`):
 ```c
 // Define LED Matrix Size
-#define MATRIX_WIDTH  8
-#define MATRIX_HEIGHT 8
+#define ROW_COUNT 8
+#define COL_COUNT 8
 
 // Define GPIO pins for the LED Matrix and Joystick
-#define LED_MATRIX_PIN_1  5
-#define LED_MATRIX_PIN_2  6
-#define JOYSTICK_PIN_UP   7
-#define JOYSTICK_PIN_DOWN 8
+#define SER_PIN GPIO_NUM_23
+#define SRCLK_PIN GPIO_NUM_18
+#define LATCH_PIN GPIO_NUM_5
+#define move_x_gpio GPIO_NUM_33
+#define move_y_gpio GPIO_NUM_32
+#define bullet_gpio GPIO_NUM_22
