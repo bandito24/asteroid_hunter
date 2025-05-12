@@ -6,6 +6,7 @@ static Asteroid asteroids[MAX_ASTEROIDS] = {0};
 uint8_t ship_width = 3;
 uint8_t ship_height = 2;
 static Spaceship ship;
+static uint32_t destroyed_asteroids = 0;
 volatile static bool bullet_fired = false;
 gameplay_state gameplay;
 
@@ -117,8 +118,13 @@ bool asteroid_destroy(int8_t x_pos, int8_t y_pos) {
     for (int i = 0; i < MAX_ASTEROIDS; i++) {
         for (int j = 0; j < asteroids[i].dimmension_count; j++) {
             if (asteroids[i].dimmensions[j].x_pos == x_pos &&
-                asteroids[i].dimmensions[j].y_pos == y_pos) {
+                asteroids[i].dimmensions[j].y_pos == y_pos && asteroids[i].active) {
                 asteroids[i].active = false;
+                destroyed_asteroids += 1;
+                if (destroyed_asteroids >= ASTEROID_LEVEL_THRESHOLD &&
+                    gameplay.level < MAX_LEVELS) {
+                    activate_win();
+                }
                 return true;
             }
         }
@@ -152,7 +158,6 @@ void bullet_task(void *pvParameters) {
             }
         }
 
-
         for (int i = 0; i < MAX_ASTEROIDS; i++) {
             if (asteroids[i].active) {
                 for (int j = 0; j < 4; j++) {
@@ -162,7 +167,7 @@ void bullet_task(void *pvParameters) {
                                 asteroids[i].dimmensions[k].x_pos &&
                             ship.dimmensions[j].y_pos ==
                                 asteroids[i].dimmensions[k].y_pos) {
-                                    activate_loss();
+                            activate_loss();
                         }
                     }
                 }
@@ -218,9 +223,10 @@ void generate_asteroid() {
 void end_level() {
     gameplay.idle = true;
     reset_spaceship();
-    for(int i = 0; i < MAX_ASTEROIDS; i++){
+    for (int i = 0; i < MAX_ASTEROIDS; i++) {
         asteroids[i].active = false;
     }
+    destroyed_asteroids = 0;
 }
 
 void activate_loss() {
@@ -231,7 +237,7 @@ void activate_loss() {
 void activate_win() {
     end_level();
     gameplay.level += 1;
-    gameplay.has_lost = true;
+    gameplay.has_won = true;
 }
 
 void draw_spaceship(int8_t left_wing_index, int8_t nose_index) {
@@ -244,6 +250,9 @@ void draw_spaceship(int8_t left_wing_index, int8_t nose_index) {
 }
 
 void reset_spaceship() { draw_spaceship(0, 1); }
+
+const int decrement_step = (STARTING_ASTEROID_RATE_MS - 100) /
+                           MAX_LEVELS; // want no faster than every 100ms
 
 void asteroid_task(void *pvParameters) {
     int tick = 0;
@@ -274,8 +283,10 @@ void asteroid_task(void *pvParameters) {
             generate_asteroid();
             printf("Generated asteroid\n");
         }
+        uint16_t curr_speed =
+            STARTING_ASTEROID_RATE_MS - (decrement_step * gameplay.level);
 
         tick++;
-        vTaskDelay(pdMS_TO_TICKS(700));
+        vTaskDelay(pdMS_TO_TICKS(curr_speed));
     }
 }

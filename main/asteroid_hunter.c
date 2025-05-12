@@ -1,7 +1,8 @@
 #include "spaceship.h"
 #include "display.h"
 #include "controls.h"
-
+#include "driver/timer.h"
+#include "esp_timer.h"
 
 
 
@@ -17,6 +18,7 @@ void app_main()
     xTaskCreate(display, "display", 2400, NULL, 2, NULL);
     xTaskCreate(bullet_task, "bullet_task", 2400, NULL, 1, NULL);
     xTaskCreate(asteroid_task, "asteroid_task", 2400, NULL, 1, NULL);
+
     while (1)
     {
         clear_buffer();

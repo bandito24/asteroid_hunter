@@ -5,8 +5,12 @@
 #include "freertos/task.h"
 #include <stdint.h>
 
+
 #define MAX_BULLETS 10
 #define MAX_ASTEROIDS 10
+#define ASTEROID_LEVEL_THRESHOLD 5
+#define MAX_LEVELS 9
+#define STARTING_ASTEROID_RATE_MS 600
 
 typedef struct {
     uint8_t x_pos;
